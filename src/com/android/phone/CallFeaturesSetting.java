@@ -39,7 +39,6 @@ import android.os.Message;
 import android.os.SystemProperties;
 import android.os.PowerManager;
 import android.os.UserHandle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
