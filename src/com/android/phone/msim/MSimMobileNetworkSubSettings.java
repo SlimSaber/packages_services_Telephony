@@ -137,26 +137,6 @@ public class MSimMobileNetworkSubSettings extends PreferenceActivity
         if (mGsmUmtsOptions != null &&
                 mGsmUmtsOptions.preferenceTreeClick(preference) == true) {
             return true;
-        } else if (preference == mButtonDataRoam) {
-            // Handles the click events for Data Roaming menu item.
-            if (DBG) log("onPreferenceTreeClick: preference = mButtonDataRoam");
-
-            //normally called on the toggle click
-            if (mButtonDataRoam.isChecked()) {
-                // First confirm with a warning dialog about charges
-                mOkClicked = false;
-                new AlertDialog.Builder(this).setMessage(
-                        getResources().getString(R.string.roaming_warning))
-                        .setTitle(android.R.string.dialog_alert_title)
-                        .setIconAttribute(android.R.attr.alertDialogIcon)
-                        .setPositiveButton(android.R.string.yes, this)
-                        .setNegativeButton(android.R.string.no, this)
-                        .show()
-                        .setOnDismissListener(this);
-            } else {
-                 multiSimSetDataRoaming(false);
-            }
-            return true;
         } else if (mCdmaOptions != null &&
                    mCdmaOptions.preferenceTreeClick(preference) == true) {
             if (Boolean.parseBoolean(
@@ -200,6 +180,7 @@ public class MSimMobileNetworkSubSettings extends PreferenceActivity
         PreferenceScreen prefSet = getPreferenceScreen();
 
         mButtonDataRoam = (SwitchPreference) prefSet.findPreference(BUTTON_ROAMING_KEY);
+        mButtonDataRoam.setOnPreferenceChangeListener(this);
         mButtonPreferredNetworkMode = (ListPreference) prefSet.findPreference(
                 BUTTON_PREFERED_NETWORK_MODE);
 
@@ -306,6 +287,25 @@ public class MSimMobileNetworkSubSettings extends PreferenceActivity
                 //Set the modem network mode
                 mPhone.setPreferredNetworkType(modemNetworkMode, mHandler
                         .obtainMessage(MyHandler.MESSAGE_SET_PREFERRED_NETWORK_TYPE));
+            }
+        } else if (preference == mButtonDataRoam) {
+            // Handles the click events for Data Roaming menu item.
+            if (DBG) log("onPreferenceTreeClick: preference = mButtonDataRoam");
+
+            //normally called on the toggle click
+            if ((Boolean) objValue) {
+                // First confirm with a warning dialog about charges
+                mOkClicked = false;
+                new AlertDialog.Builder(this).setMessage(
+                        getResources().getString(R.string.roaming_warning))
+                        .setTitle(android.R.string.dialog_alert_title)
+                        .setIconAttribute(android.R.attr.alertDialogIcon)
+                        .setPositiveButton(android.R.string.yes, this)
+                        .setNegativeButton(android.R.string.no, this)
+                        .show()
+                        .setOnDismissListener(this);
+            } else {
+                 multiSimSetDataRoaming(false);
             }
         }
 
